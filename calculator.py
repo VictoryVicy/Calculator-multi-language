@@ -1,71 +1,47 @@
 import tkinter as tk
 
-calculation = ""
+def on_button_click(symbol):
+    current_text = entry_var.get()
+    entry_var.set(current_text + str(symbol))
 
-def add_to_calculate(symbol):
-    global calculation
-    calculation += str(symbol)
-    text_result.delete(1.0, "end")
-    text_result.insert(1.0, calculation)
+def on_clear_click():
+    entry_var.set("")
 
-def evaluate_calculation():
-    global calculation
+def on_equals_click():
     try:
-        calculation = str(eval(calculation))
-        text_result.delete(1.0, "end")
-        text_result.insert(1.0, calculation)
-    except:
-        clear_field()
-        text_result.insert(1.0, "Error")
-
-
-def clear_field():
-    global calculation
-    calculation = ""
-    text_result.delete(1.0, "end")
-
+        result = eval(entry_var.get())
+        entry_var.set(result)
+    except Exception as e:
+        entry_var.set("Error")
 
 root = tk.Tk()
-root.geometry("400x400")
+root.title("Simple Calculator")
 
-text_result = tk.Text(root, height=2, width=16, font=("Arial", 20))
-text_result.grid(columnspan=5)
+entry_var = tk.StringVar()
 
-btn_1 = tk.Button(root, text="1", command=lambda: add_to_calculate(1), height=2, width=5, font=("Arial", 14))
-btn_1.grid(row=2, column=1)
-btn_2 = tk.Button(root, text="2", command=lambda: add_to_calculate(2), height=2, width=5, font=("Arial", 14))
-btn_2.grid(row=2, column=2)
-btn_3 = tk.Button(root, text="3", command=lambda: add_to_calculate(3), height=2, width=5, font=("Arial", 14))
-btn_3.grid(row=2, column=3)
-btn_4 = tk.Button(root, text="4", command=lambda: add_to_calculate(4), height=2, width=5, font=("Arial", 14))
-btn_4.grid(row=3, column=1)
-btn_5 = tk.Button(root, text="5", command=lambda: add_to_calculate(5), height=2, width=5, font=("Arial", 14))
-btn_5.grid(row=3, column=2)
-btn_6 = tk.Button(root, text="6", command=lambda: add_to_calculate(6), height=2, width=5, font=("Arial", 14))
-btn_6.grid(row=3, column=3)
-btn_7 = tk.Button(root, text="7", command=lambda: add_to_calculate(7), height=2, width=5, font=("Arial", 14))
-btn_7.grid(row=4, column=1)
-btn_8 = tk.Button(root, text="8", command=lambda: add_to_calculate(8), height=2, width=5, font=("Arial", 14))
-btn_8.grid(row=4, column=2)
-btn_9 = tk.Button(root, text="9", command=lambda: add_to_calculate(9), height=2, width=5, font=("Arial", 14))
-btn_9.grid(row=4, column=3)
-btn_0 = tk.Button(root, text="0", command=lambda: add_to_calculate(0), height=2, width=5, font=("Arial", 14))
-btn_0.grid(row=5, column=2)
-btn_plus = tk.Button(root, text="+", command=lambda: add_to_calculate("+"), height=2, width=5, font=("Arial", 14))
-btn_plus.grid(row=2, column=4)
-btn_minus = tk.Button(root, text="-", command=lambda: add_to_calculate("-"), height=2, width=5, font=("Arial", 14))
-btn_minus.grid(row=3, column=4)
-btn_mul = tk.Button(root, text="*", command=lambda: add_to_calculate("*"), height=2, width=5, font=("Arial", 14))
-btn_mul.grid(row=4, column=4)
-btn_plus = tk.Button(root, text="/", command=lambda: add_to_calculate("/"), height=2, width=5, font=("Arial", 14))
-btn_plus.grid(row=5, column=4)
+entry = tk.Entry(root, textvariable=entry_var, font=("Arial", 20), justify="right")
+entry.grid(row=0, column=0, columnspan=4)
 
-btn_open = tk.Button(root, text="(", command=lambda: add_to_calculate("("), height=2, width=5, font=("Arial", 14))
-btn_open.grid(row=5, column=1)
-btn_close = tk.Button(root, text=")", command=lambda: add_to_calculate(")"), height=2, width=5, font=("Arial", 14))
-btn_close.grid(row=5, column=3)
-btn_clear = tk.Button(root, text="C", command=clear_field, height=2, width=11, font=("Arial", 14))
-btn_clear.grid(row=6, column=1, columnspan=2)
-btn_equals = tk.Button(root, text="=", command=evaluate_calculation, height=2, width=11, font=("Arial", 14))
-btn_equals.grid(row=6, column=3, columnspan=2)
+buttons = [
+    ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('/', 1, 3),
+    ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('*', 2, 3),
+    ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
+    ('0', 4, 0), ('C', 4, 1), ('=', 4, 2), ('+', 4, 3),
+]
+
+for (text, row, column) in buttons:
+    if text == '=':
+        button = tk.Button(root, text=text, command=on_equals_click, height=2, width=5, font=("Arial", 14))
+    else:
+        button = tk.Button(root, text=text, command=lambda t=text: on_button_click(t), height=2, width=5, font=("Arial", 14))
+    button.grid(row=row, column=column, sticky="nsew", padx=5, pady=5)
+
+# Membuat tombol "=" lebih lebar
+root.grid_columnconfigure(2, weight=2)
+
+# Membuat semua baris dan kolom grid dapat menyesuaikan ukuran window
+for i in range(5):
+    root.grid_rowconfigure(i, weight=1)
+    root.grid_columnconfigure(i, weight=1)
+
 root.mainloop()
