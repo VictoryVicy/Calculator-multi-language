@@ -15,7 +15,7 @@ def on_equals_click():
         entry_var.set("Error")
 
 root = tk.Tk()
-root.title("Simple Calculator")
+root.title("Responsive Calculator")
 
 entry_var = tk.StringVar()
 
